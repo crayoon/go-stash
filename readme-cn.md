@@ -42,7 +42,9 @@ Clusters:
       - "172.16.48.41:9092"
       - "172.16.48.42:9092"
       - "172.16.48.43:9092"
-      Topic: ngapplog
+      Topic: 
+        - topic-log1
+        - topic-log2
       Group: stash
       Conns: 3
       Consumers: 10
@@ -80,7 +82,7 @@ Clusters:
       - "http://172.16.188.73:9200"
       - "http://172.16.188.74:9200"
       - "http://172.16.188.75:9200"
-      Index: "go-stash-{{yyyy.MM.dd}}"
+      Index: "{.fields.topic}-{{yyyy.MM.dd}}"
       MaxChunkBytes: 5242880
       GracePeriod: 10s
       Compress: false
@@ -135,7 +137,7 @@ Offset: first
     - _score
     - _id
     - "@version"
-    - topic
+    # - topic
     - index
     - beat
     - docker_container
@@ -164,7 +166,8 @@ Offset: first
 
 #### Index
   索引名称，indexname-{{yyyy.MM.dd}}表示年.月.日，也可以用{{yyyy-MM-dd}}，格式自己定义
-
+  ##### 修改
+    新增兼容指定多个topic（或其他字段）如 {.fields.topic}-{{yyyy.MM.dd}} 或 {.message.field1}
 #### MaxChunkBytes
   每次往ES提交的bulk大小，默认是5M，可依据ES的io情况，适当的调整
 
