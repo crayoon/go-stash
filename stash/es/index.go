@@ -121,9 +121,22 @@ func buildIndexFormatter(indexFormat string, loc *time.Location) func(map[string
 				vals = append(vals, formatTime(attr, getTime(m).In(loc)))
 				continue
 			}
-
 			if val, ok := m[attr]; ok {
 				vals = append(vals, val)
+			} else if attrList := strings.Split(attr, "."); len(attrList) > 1 {
+				mTemp := m
+				for _, attrItem := range attrList {
+					v, ok := mTemp[attrItem]
+					if !ok {
+						vals = append(vals, "")
+						break
+					}
+					mTemp, ok = v.(map[string]interface{})
+					if !ok {
+						vals = append(vals, v.(string))
+						break
+					}
+				}
 			} else {
 				vals = append(vals, "")
 			}
